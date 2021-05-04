@@ -1,4 +1,4 @@
-import sqlite3
+import os
 from sqlalchemy import create_engine, text, select
 from sqlalchemy.orm import sessionmaker
 
@@ -18,16 +18,22 @@ MAPBOX_TOKEN = 'pk.eyJ1Ijoiam9obnZpbGxhbnVldmEiLCJhIjoiY2tvM29ybG14MGljZDMxcGRiN
 app = dash.Dash(__name__)
 
 #------------------------------------------------------------------------------
-
 # Import Data
 
-# engine = create_engine('sqlite:///sfapts.db', pool_pre_ping = True)
-# with engine.connect() as connection:
-#     dbdata = connection.execute(text("SELECT * FROM apartment"))
-#     df = pd.DataFrame(dbdata)
+# Path Finder Function: https://stackoverflow.com/questions/1724693/find-a-file-in-python
+def find(name, path):
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)
 
-df = pd.read_csv("../sfaptsscraper/sfaptsscraper/sfapts.csv")
-df['neighborhood'] = df['neighborhood'].fillna('San Francisco')
+PATH = 'sqlite:///' + find('sfapts.db', os.getcwd() + '/..') #added parent directory to path; app file is in different directory branch than database
+engine = create_engine(PATH)
+with engine.connect() as connection:
+    dbdata = connection.execute(text("SELECT * FROM apartment"))
+    df = pd.DataFrame(dbdata, columns = dbdata.keys())
+
+# df = pd.read_csv("../sfaptsscraper/sfaptsscraper/sfapts.csv")
+# df['neighborhood'] = df['neighborhood'].fillna('San Francisco')
 
 # Aggregated Price Data
 
