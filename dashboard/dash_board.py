@@ -1,10 +1,8 @@
 import os
 from sqlalchemy import create_engine, text, select
-from sqlalchemy.orm import sessionmaker
 
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objs as go
 
 import dash
 import dash_table
@@ -25,9 +23,9 @@ def find(name, path):
     for root, dirs, files in os.walk(path):
         if name in files:
             return os.path.join(root, name)
+CONNECTION_STRING = 'sqlite:///' + find('sfapts.db', os.getcwd() + '/..') #added parent directory to path; app file is in different directory branch than database
 
-PATH = 'sqlite:///' + find('sfapts.db', os.getcwd() + '/..') #added parent directory to path; app file is in different directory branch than database
-engine = create_engine(PATH)
+engine = create_engine(CONNECTION_STRING)
 with engine.connect() as connection:
     dbdata = connection.execute(text("SELECT * FROM apartment"))
     df = pd.DataFrame(dbdata, columns = dbdata.keys())
@@ -41,9 +39,7 @@ dff = df.groupby('neighborhood').agg(
         {'price': [
             'count',
             'mean',
-            'std',
-            'min',
-            'max'
+            'std'
         ]}
     ).sort_values(
         by=('price','count'),
@@ -62,7 +58,7 @@ app.layout = html.Div([
     dcc.Checklist(
         id='neighborhood-options',
         options = [{'label': neighborhood, 'value': neighborhood} for neighborhood in df.neighborhood.unique()],
-        value = dff.neighborhood[:3]
+        value = dff.neighborhood[:10]
     ),
 
     html.H2('Geo Scatterplot of Selected Neighborhoods'),
@@ -73,7 +69,7 @@ app.layout = html.Div([
 
     dcc.Graph(id='neighborhood-boxplots'),
 
-    html.H2('Price Histogram for Selected Neighborhoods'),
+    html.H2('Aggregate Price Histogram for Selected Neighborhoods'),
 
     dcc.Graph(id='price-histogram'),
 

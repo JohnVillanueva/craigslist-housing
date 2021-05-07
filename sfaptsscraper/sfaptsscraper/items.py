@@ -8,6 +8,7 @@ from scrapy.loader import ItemLoader
 from itemloaders.processors import TakeFirst, MapCompose
 from w3lib.html import remove_tags
 from datetime import datetime
+from .neighborhoods import Neighborhood_Relabel
 
 def remove_currency(value):
     return int(float(value.replace('$','').replace(',','').strip()))
@@ -39,7 +40,7 @@ class SfaptsscraperItem(scrapy.Item):
     name = scrapy.Field(input_processor = MapCompose(remove_tags), output_processor = TakeFirst())
     price = scrapy.Field(input_processor = MapCompose(remove_currency), output_processor = TakeFirst())
     address = scrapy.Field(output_processor = TakeFirst())
-    neighborhood = scrapy.Field(input_processor= MapCompose(edit_neighborhood), output_processor = TakeFirst())
+    neighborhood = scrapy.Field(input_processor= MapCompose(edit_neighborhood, Neighborhood_Relabel), output_processor = TakeFirst())
     bedrooms = scrapy.Field(input_processor = MapCompose(edit_bedroom), output_processor = TakeFirst())
     bathrooms = scrapy.Field(input_processor = MapCompose(edit_bathroom), output_processor = TakeFirst())
     link = scrapy.Field(output_processor = TakeFirst())
