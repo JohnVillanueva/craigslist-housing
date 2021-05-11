@@ -1,5 +1,6 @@
 import os
-from sqlalchemy import create_engine, text, select
+from pymongo import MongoClient
+#from sqlalchemy import create_engine, text, select
 
 import pandas as pd
 import plotly.express as px
@@ -11,27 +12,33 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 
-MAPBOX_TOKEN = 'pk.eyJ1Ijoiam9obnZpbGxhbnVldmEiLCJhIjoiY2tvM29ybG14MGljZDMxcGRiNzIwN3E5OSJ9.mHxEvurXk2fTpHRS7pEbWA'
+MAPBOX_TOKEN = os.environ['MAPBOX_TOKEN']
 
 app = dash.Dash(__name__)
 
 #------------------------------------------------------------------------------
 # Import Data
 
-# Path Finder Function: https://stackoverflow.com/questions/1724693/find-a-file-in-python
-def find(name, path):
-    for root, dirs, files in os.walk(path):
-        if name in files:
-            return os.path.join(root, name)
-CONNECTION_STRING = 'sqlite:///' + find('sfapts.db', os.getcwd() + '/..') #added parent directory to path; app file is in different directory branch than database
+# # Path Finder Function: https://stackoverflow.com/questions/1724693/find-a-file-in-python
+# def find(name, path):
+#     for root, dirs, files in os.walk(path):
+#         if name in files:
+#             return os.path.join(root, name)
+# CONNECTION_STRING = 'sqlite:///' + find('sfapts.db', os.getcwd() + '/..') #added parent directory to path; app file is in different directory branch than database
 
-engine = create_engine(CONNECTION_STRING)
-with engine.connect() as connection:
-    dbdata = connection.execute(text("SELECT * FROM apartment"))
-    df = pd.DataFrame(dbdata, columns = dbdata.keys())
+# engine = create_engine(CONNECTION_STRING)
+# with engine.connect() as connection:
+#     dbdata = connection.execute(text("SELECT * FROM apartment"))
+#     df = pd.DataFrame(dbdata, columns = dbdata.keys())
 
-# df = pd.read_csv("../sfaptsscraper/sfaptsscraper/sfapts.csv")
-# df['neighborhood'] = df['neighborhood'].fillna('San Francisco')
+user = os.environ['DB_USERNAME']
+password = os.environ['DB_PASSWORD']
+host = os.environ['DB_HOST']
+db_name = os.environ['DB_NAME']
+CONNECTION_STRING = f'mongodb+srv://{user}:{password}@{host}/{db_name}?retryWrites=true&w=majority'
+
+db = MongoClient(CONNECTION_STRING)['craigslist-scraperbase']
+df = pd.DataFrame(list(db.apartment.find()))
 
 # Aggregated Price Data
 

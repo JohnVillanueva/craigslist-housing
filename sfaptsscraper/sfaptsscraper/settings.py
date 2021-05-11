@@ -12,7 +12,13 @@ BOT_NAME = 'sfaptsscraper'
 SPIDER_MODULES = ['sfaptsscraper.spiders']
 NEWSPIDER_MODULE = 'sfaptsscraper.spiders'
 
-CONNECTION_STRING = 'sqlite:///sfapts.db'
+
+
+user = os.environ['USERNAME']
+password = os.environ['PASSWORD']
+host = os.environ['HOST']
+db_name = os.environ['DB_NAME']
+CONNECTION_STRING = f'mongodb+srv://{user}:{password}@{host}/{db_name}?retryWrites=true&w=majority' #'sqlite:///sfapts.db'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

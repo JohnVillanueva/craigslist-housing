@@ -11,6 +11,7 @@ sf_neighborhoods = [neighborhood.text.strip() for neighborhood in neighborhood_h
 from rapidfuzz.string_metric import levenshtein
 from difflib import SequenceMatcher
 
+# Source: https://stackoverflow.com/questions/18715688/find-common-substring-between-two-strings
 def longestSubstringFinder(string1, string2):
     match = SequenceMatcher(None, string1.lower(), string2.lower()).find_longest_match(0, len(string1), 0, len(string2))
     return string1[match.a: match.a + match.size]
