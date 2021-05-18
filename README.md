@@ -4,17 +4,19 @@ For prospective San Francisco renters, or current SF renters looking to relocate
 
 ![]('dashboardmap.jpeg')
 
-This proof of concept dashboard is built using Python libraries Dash and Plotly Express that pull from a local SQLlite database using the SQLalchemy ORM. Scrapy and SQLAlchemy are also used to scrape data from Craiglist and load the data directly into the SQLite database.
+This dashboard is built using the Python libraries Dash and Plotly Express that read from a remote MongoDB Atlas database using PyMongo. Scrapy, Scrapyd (Scrapy Daemon), and the MongoEngine ODM are also used to scrape data from Craigslist and write to MongoDB on a daily, scheduled basis.
 
-Libraries and Packages:
+Dashboard Application:
 - Dash
 - Plotly Express, MapBox
-- SQLAlchemy, SQLite
+- PyMongo
+
+Scraper:
 - Scrapy
+- Scrapyd, ScrapydWeb, Scrapyd-Client
+- MonogoEngine
+- Data Cleaning: BeautifulSoup4, RapidFuzz
 
 Planned Updates:
-- Data Cleaning: Relabeling improper neighborhood names consolidating into proper neighborhood. Use Word2Vec model and place with the most similar 'real' neighborhood. Overkill Strategy: Create 'lat-long' clusters from high count (i.e. real) neighborhood labels and place low count neighborhood-labeled apartments in the closest 'real' neighborhood.
 - Add a Price Slider to filter by the users price range.
-- Setup a cloud based MySQL or MongoDB database.
-- Automate Scrapy scraper using Scrapyd
 - Host Dash App on Heroku
