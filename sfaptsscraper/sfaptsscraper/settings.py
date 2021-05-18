@@ -1,3 +1,5 @@
+import os
+
 # Scrapy settings for sfaptsscraper project
 #
 # For simplicity, this file contains only settings considered important or
@@ -14,11 +16,11 @@ NEWSPIDER_MODULE = 'sfaptsscraper.spiders'
 
 
 
-user = os.environ['USERNAME']
-password = os.environ['PASSWORD']
-host = os.environ['HOST']
-db_name = os.environ['DB_NAME']
-CONNECTION_STRING = f'mongodb+srv://{user}:{password}@{host}/{db_name}?retryWrites=true&w=majority' #'sqlite:///sfapts.db'
+# user = os.environ['USERNAME']
+# password = os.environ['PASSWORD']
+# host = os.environ['HOST']
+# db_name = os.environ['DB_NAME']
+CONNECTION_STRING = os.environ['CONNECTION_STRING'] #f'mongodb+srv://{user}:{password}@{host}/{db_name}?retryWrites=true&w=majority' #'sqlite:///sfapts.db'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
